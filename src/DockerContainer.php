@@ -182,7 +182,7 @@ class DockerContainer extends DockerCommand
         $startCommand = [
             $this->getBaseCommand(),
             $verb,
-            ...$this->getExtraOptions(),
+            ...$this->getExtraOptions($verb),
             $this->image,
         ];
 
@@ -281,7 +281,7 @@ class DockerContainer extends DockerCommand
         return $this->createContainerInstanceFromProcess($process);
     }
 
-    protected function getExtraOptions(): array
+    protected function getExtraOptions(string $verb): array
     {
         $extraOptions = [];
 
@@ -309,7 +309,7 @@ class DockerContainer extends DockerCommand
             $extraOptions[] = "--name {$this->name}";
         }
 
-        if ($this->daemonize) {
+        if ($this->daemonize && $verb !== 'create') {
             $extraOptions[] = '-d';
         }
 

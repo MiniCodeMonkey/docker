@@ -69,13 +69,13 @@ class DockerContainerInstance
         return $process;
     }
 
-    public function startAndStreamOutput(callable $outputCallback): void
+    public function startAndStreamOutput(callable $outputCallback, int $timeoutInSeconds = 3000): void
     {
-        $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier());
+        $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier()) . ' --attach';
 
-        $process = Process::fromShellCommandline($fullCommand);
-
-        $process->run($outputCallback);
+        Process::fromShellCommandline($fullCommand)
+            ->setTimeout($timeoutInSeconds)
+            ->run($outputCallback);
     }
 
     public function getName(): string

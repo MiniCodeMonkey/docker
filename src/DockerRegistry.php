@@ -13,8 +13,8 @@ class DockerRegistry extends DockerCommand
             $this->getBaseCommand(),
             'login',
             $server,
-            $username ? ('--username ' . $username) : null,
-            $password ? ('$--password ' . $password) : null,
+            $username ? ('--username ' . escapeshellarg($username)) : null,
+            $password ? ('--password ' . escapeshellarg($password)) : null,
         ];
 
         $process = Process::fromShellCommandline(implode(' ', array_filter($command)));
