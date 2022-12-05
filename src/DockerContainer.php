@@ -233,13 +233,13 @@ class DockerContainer
         return implode(' ', $execCommand);
     }
 
-    public function getCopyCommand(string $dockerIdentifier, string $fileOrDirectoryOnHost, string $pathInContainer): string
+    public function getCopyCommand(string $source, string $destination): string
     {
         $copyCommand = [
             $this->getBaseCommand(),
             'cp',
-            $fileOrDirectoryOnHost,
-            "{$dockerIdentifier}:{$pathInContainer}",
+            $source,
+            $destination
         ];
 
         return implode(' ', $copyCommand);
