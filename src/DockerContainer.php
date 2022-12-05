@@ -133,6 +133,15 @@ class DockerContainer extends DockerCommand
         return $this;
     }
 
+    public function setEnvironmentVariables(array $variables): self
+    {
+        foreach ($variables as $key => $val) {
+            $this->setEnvironmentVariable($key, $val);
+        }
+
+        return $this;
+    }
+
     public function setVolume(string $pathOnHost, string $pathOnDocker): self
     {
         $this->volumeMappings[] = new VolumeMapping($pathOnHost, $pathOnDocker);
@@ -223,7 +232,7 @@ class DockerContainer extends DockerCommand
         return implode(' ', $copyCommand);
     }
 
-    public function pullImage(): void
+    public function pullImage(): self
     {
         $pullCommand = [
             $this->getBaseCommand(),
@@ -238,6 +247,8 @@ class DockerContainer extends DockerCommand
         if (! $process->isSuccessful()) {
             throw CouldNotPullDockerImageContainer::processFailed($this, $process);
         }
+
+        return $this;
     }
 
     public function startPaused(): DockerContainerInstance
@@ -327,4 +338,5 @@ class DockerContainer extends DockerCommand
             $this->name,
         );
     }
+
 }
