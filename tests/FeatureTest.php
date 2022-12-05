@@ -5,7 +5,7 @@ namespace Spatie\Docker\Tests;
 use PHPUnit\Framework\TestCase;
 use Spatie\Docker\DockerContainer;
 use Spatie\Docker\DockerContainerInstance;
-use Spatie\Docker\Exceptions\CouldNotStartDockerContainer;
+use Spatie\Docker\Exceptions\CouldNotStartDockerContainerContainer;
 use Spatie\Ssh\Ssh;
 
 class FeatureTest extends TestCase
@@ -79,7 +79,7 @@ class FeatureTest extends TestCase
     /** @test */
     public function it_will_throw_an_exception_if_the_container_could_not_start()
     {
-        $this->expectException(CouldNotStartDockerContainer::class);
+        $this->expectException(CouldNotStartDockerContainerContainer::class);
 
         (new DockerContainer('non-existing-image'))->start();
     }

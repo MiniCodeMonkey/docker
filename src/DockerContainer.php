@@ -2,16 +2,13 @@
 
 namespace Spatie\Docker;
 
-use Spatie\Docker\Exceptions\CouldNotCreateDockerContainer;
-use Spatie\Docker\Exceptions\CouldNotPullDockerImage;
-use Spatie\Docker\Exceptions\CouldNotStartDockerContainer;
-use Spatie\Macroable\Macroable;
+use Spatie\Docker\Exceptions\CouldNotCreateDockerContainerContainer;
+use Spatie\Docker\Exceptions\CouldNotPullDockerImageContainer;
+use Spatie\Docker\Exceptions\CouldNotStartDockerContainerContainer;
 use Symfony\Component\Process\Process;
 
-class DockerContainer
+class DockerContainer extends DockerCommand
 {
-    use Macroable;
-
     public string $image = '';
 
     public string $name = '';
@@ -39,8 +36,6 @@ class DockerContainer
     public bool $cleanUpAfterExit = true;
 
     public bool $stopOnDestruct = false;
-
-    public string $remoteHost = '';
 
     public string $command = '';
 
@@ -166,28 +161,11 @@ class DockerContainer
         return $this;
     }
 
-    public function remoteHost(string $remoteHost): self
-    {
-        $this->remoteHost = $remoteHost;
-
-        return $this;
-    }
-
     public function command(string $command): self
     {
         $this->command = $command;
 
         return $this;
-    }
-
-    public function getBaseCommand(): string
-    {
-        $baseCommand = [
-            'docker',
-            ...$this->getExtraDockerOptions(),
-        ];
-
-        return implode(' ', $baseCommand);
     }
 
     public function getStartCommand(string $verb): string
@@ -258,7 +236,7 @@ class DockerContainer
         $process->run();
 
         if (! $process->isSuccessful()) {
-            throw CouldNotPullDockerImage::processFailed($this, $process);
+            throw CouldNotPullDockerImageContainer::processFailed($this, $process);
         }
     }
 
@@ -271,7 +249,7 @@ class DockerContainer
         $process->run();
 
         if (! $process->isSuccessful()) {
-            throw CouldNotCreateDockerContainer::processFailed($this, $process);
+            throw CouldNotCreateDockerContainerContainer::processFailed($this, $process);
         }
 
         return $this->createContainerInstanceFromProcess($process);
@@ -286,7 +264,7 @@ class DockerContainer
         $process->run();
 
         if (! $process->isSuccessful()) {
-            throw CouldNotStartDockerContainer::processFailed($this, $process);
+            throw CouldNotStartDockerContainerContainer::processFailed($this, $process);
         }
 
         return $this->createContainerInstanceFromProcess($process);
@@ -337,17 +315,6 @@ class DockerContainer
         }
 
         return $extraOptions;
-    }
-
-    protected function getExtraDockerOptions(): array
-    {
-        $extraDockerOptions = [];
-
-        if ($this->remoteHost !== '') {
-            $extraDockerOptions[] = "-H {$this->remoteHost}";
-        }
-
-        return $extraDockerOptions;
     }
 
     private function createContainerInstanceFromProcess(Process $process): DockerContainerInstance

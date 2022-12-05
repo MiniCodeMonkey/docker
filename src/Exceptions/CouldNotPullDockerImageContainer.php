@@ -2,7 +2,7 @@
 
 namespace Spatie\Docker\Exceptions;
 
-class CouldNotPullDockerImage extends DockerException
+class CouldNotPullDockerImageContainer extends DockerContainerException
 {
     protected static function getActionDescription(): string
     {

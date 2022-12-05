@@ -2,7 +2,7 @@
 
 namespace Spatie\Docker\Exceptions;
 
-class CouldNotCreateDockerContainer extends DockerException
+class CouldNotCreateDockerContainerContainer extends DockerContainerException
 {
     protected static function getActionDescription(): string
     {
