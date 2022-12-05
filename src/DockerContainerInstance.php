@@ -37,13 +37,33 @@ class DockerContainerInstance
 
     public function stop(): Process
     {
-        $fullCommand = $this->config->getStopCommand($this->getShortDockerIdentifier());
+        $fullCommand = $this->config->getBasicCommand('stop', $this->getShortDockerIdentifier());
 
         $process = Process::fromShellCommandline($fullCommand);
 
         $process->run();
 
         return $process;
+    }
+
+    public function start(): Process
+    {
+        $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier());
+
+        $process = Process::fromShellCommandline($fullCommand);
+
+        $process->run();
+
+        return $process;
+    }
+
+    public function startAndStreamOutput(callable $outputCallback): void
+    {
+        $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier());
+
+        $process = Process::fromShellCommandline($fullCommand);
+
+        $process->run($outputCallback);
     }
 
     public function getName(): string

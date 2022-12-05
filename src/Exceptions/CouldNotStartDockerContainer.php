@@ -2,14 +2,10 @@
 
 namespace Spatie\Docker\Exceptions;
 
-use Exception;
-use Spatie\Docker\DockerContainer;
-use Symfony\Component\Process\Process;
-
-class CouldNotStartDockerContainer extends Exception
+class CouldNotStartDockerContainer extends DockerException
 {
-    public static function processFailed(DockerContainer $container, Process $process)
+    static protected function getActionDescription(): string
     {
-        return new static("Could not start docker container for image {$container->image}`. Process output: `{$process->getErrorOutput()}`");
+        return 'start Docker container';
     }
 }
