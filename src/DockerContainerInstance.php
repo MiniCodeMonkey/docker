@@ -10,6 +10,8 @@ class DockerContainerInstance
 {
     use Macroable;
 
+    const DEFAULT_PROCESS_TIMEOUT_SECONDS = 600;
+
     private DockerContainer $config;
 
     private string $dockerIdentifier;
@@ -39,7 +41,7 @@ class DockerContainerInstance
     {
         $fullCommand = $this->config->getBasicCommand('stop', $this->getShortDockerIdentifier());
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -51,7 +53,7 @@ class DockerContainerInstance
     {
         $fullCommand = $this->config->getBasicCommand('rm', $this->getShortDockerIdentifier());
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -62,7 +64,7 @@ class DockerContainerInstance
     {
         $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier());
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -73,7 +75,7 @@ class DockerContainerInstance
     {
         $fullCommand = $this->config->getBasicCommand('start', $this->getShortDockerIdentifier()) . ' --attach';
 
-        return Process::fromShellCommandline($fullCommand)
+        return $this->createProcess($fullCommand)
             ->setTimeout($timeoutInSeconds)
             ->run($outputCallback);
     }
@@ -111,7 +113,7 @@ class DockerContainerInstance
 
         $fullCommand = $this->config->getExecCommand($this->getShortDockerIdentifier(), $command);
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -137,7 +139,7 @@ class DockerContainerInstance
             $this->getShortDockerIdentifier() . ':' . $pathInContainer
         );
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -171,7 +173,7 @@ class DockerContainerInstance
             $fileOrDirectoryOnHost
         );
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
 
         $process->run();
 
@@ -197,7 +199,7 @@ class DockerContainerInstance
     {
         $fullCommand = $this->config->getBasicCommand('inspect', $this->getShortDockerIdentifier());
 
-        $process = Process::fromShellCommandline($fullCommand);
+        $process = $this->createProcess($fullCommand);
         $process->run();
 
         $json = trim($process->getOutput());
@@ -205,4 +207,9 @@ class DockerContainerInstance
         return json_decode($json, true);
     }
 
+    private function createProcess(string $command): Process
+    {
+        return Process::fromShellCommandline($command)
+            ->setTimeout(self::DEFAULT_PROCESS_TIMEOUT_SECONDS);
+    }
 }
