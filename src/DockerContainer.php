@@ -268,7 +268,7 @@ class DockerContainer extends DockerCommand
 
     public function start(): DockerContainerInstance
     {
-        $command = $this->getStartCommand('start');
+        $command = $this->getStartCommand('run');
 
         $process = Process::fromShellCommandline($command);
 
