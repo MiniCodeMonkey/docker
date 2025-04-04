@@ -232,7 +232,7 @@ class DockerContainer extends DockerCommand
         return implode(' ', $copyCommand);
     }
 
-    public function pullImage(): self
+    public function pullImage(int $timeoutInSeconds = 300): self
     {
         $pullCommand = [
             $this->getBaseCommand(),
@@ -241,6 +241,7 @@ class DockerContainer extends DockerCommand
         ];
 
         $process = Process::fromShellCommandline(implode(' ', $pullCommand));
+        $process->setTimeout($timeoutInSeconds)
 
         $process->run();
 
