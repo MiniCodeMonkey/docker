@@ -241,7 +241,7 @@ class DockerContainer extends DockerCommand
         ];
 
         $process = Process::fromShellCommandline(implode(' ', $pullCommand));
-        $process->setTimeout($timeoutInSeconds)
+        $process->setTimeout($timeoutInSeconds);
 
         $process->run();
 
